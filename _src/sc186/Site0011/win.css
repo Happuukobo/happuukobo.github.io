@@ -1,0 +1,147 @@
+body{
+      margin-left:0;
+      margin-top:0;
+      background-color:#ffffff;
+      font-size:20px;
+      //color:#FF9900
+      letter-spacing: 30px
+}
+a:link {
+      color: #0000ff;
+      text-decoration: underline
+}
+a:visited {
+      color: #9900cc;
+      text-decoration: underline
+}
+a:hover {
+      color: #00ffff;
+      text-decoration: none
+}
+a:active {
+      color: #ff0000;
+      text-decoration: underline
+}
+.text {
+      font-size: 12px
+      letter-spacing: 30px
+}
+.stext {
+      font-size: 10px
+}
+h1   {
+font-size:18px;
+	font-weight: bold
+	color:#FF0000
+}
+h2   {
+font-size:14px;
+	font-weight: bold
+}
+h3   {
+font-size: 12px;
+	font-weight: bold
+}
+P    {
+	letter-spacing: 30px
+}
+ID_Title-XXL {
+	font-size: 48px
+	font-weight:bold
+	font-family: "“™•";
+}
+ID_Title-XL {
+	font-size: 34px
+	font-weight:bold
+	font-family: "“™•";
+}
+ID_Title-L {
+	font-size: 28px
+	font-weight:bold
+	font-family: "“™•";
+}
+ID_Title-M {
+	font-size: 21px
+	font-weight:bold
+	font-family: "“™•";
+}
+ID_Title-S {
+	font-size: 18px
+	font-weight:bold
+	font-family: "“™•";
+	}
+ID_Lead-L {
+	font-size: 16px
+	font-weight:bold
+	font-family: "“™•";
+}
+ID_Lead-M {
+	font-size: 13px
+	font-weight:bold
+	font-family: "“™•";
+}
+ID_Lead-S {
+	font-size: 11px
+	font-weight:bold
+	font-family: "“™•";
+}
+ID_Body-L {
+	font-size: 12px;
+	font-family: "“™•";
+}
+ID_Body-M {
+	font-size: 11px;
+	font-family: "“™•";
+}
+ID_Body-S {
+	font-size: 10px;
+	font-family: "“™•";
+}
+ID_Body-L-Bold {
+	font-size: 12px;
+	font-weight:bold
+	font-family: "“™•";
+}
+ID_Body-M-Bold {
+	font-size: 10px;
+	font-weight:bold
+	font-family: "“™•";
+}
+ID_Body-S-Bold {
+	font-size: 9px;
+	font-weight:bold
+	font-family: "“™•";
+}
+ID_Body-Indent {
+	font-size: 12px;
+	text-indent:11px;
+	font-family: "“™•";
+}
+ID_Body-Indent {
+	font-size: 12px;
+	text-indent:11px;
+	font-weight:bold
+	font-family: "“™•";
+}
+ID_Info {
+	font-size: 10px;
+	font-family: "“™•";
+}
+ID_Caption-M {
+	font-size: 9px;
+	font-family: "“™•";
+}
+ID_Caption-S {
+	font-size: 8px;
+	font-family: "“™•";
+}
+globalStyleFormat {
+	//face: #dddddd;
+	//highlight: #dddddd;
+	//shadow: #dddddd;
+	//highlight3D: #dddddd;
+	//darkshadow: #dddddd;
+	//textDisabled: #dddddd;
+	//scrollTrack: #eeeeee;
+	//arrow: #ffffff;
+}

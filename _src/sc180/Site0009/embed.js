@@ -1,0 +1,10 @@
+document.write('<!-- saved from url=(0014)about:internet -->');
+var ua = navigator.userAgent;
+document.write('<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" width="'+scrW+'" height="'+scrH+'" id="index" align="middle">');
+document.write('<param name="menu" value="false"/>');
+document.write('<param name="movie" value="index.swf' + n + '"/>');
+document.write('<param name="quality" value="high"/>');
+document.write('<param name="devicefont" value="true" /><param name="BGCOLOR" value="'+bgColor+'"/>');
+document.write('<param name="FlashVars" value="b='+ua+'"/>');
+document.write('<embed src="index.swf' + n + '" width="'+scrW+'" height="'+scrH+'" align="middle" quality="high" devicefont="true" bgcolor="'+bgColor+'" name="index" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" menu="false" FlashVars="b='+ua+'"/></embed>');
+document.write('</object>');
