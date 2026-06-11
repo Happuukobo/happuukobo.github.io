@@ -111,13 +111,13 @@
 .type-2 .menuh .menu-a a:hover	{ background-color:#333;}
 .type-2 .menuh .menu-a .cr,.type-2 .menuh .menu-a .cr:hover	{ background-color:#A9A9A9; color:#333;}
 /*(13-B.h.#FFF)*/
-.type-1 .menuh .menu-b	{ border-left:1px solid #999;}
+.type-1 .menuh .menu-b li.top	{ border-left:1px solid #999;}
 .type-1 .menuh .menu-b li,.type-1 .menuh .menu-b .top	{ border-color:#999;}	.type-1 .menuh .menu-b .top	{ border-left-width:0;}
 .type-1 .menuh .menu-b a,.type-1 .menuh .menu-b .nolink	{ padding:4px 20px;}
 .type-1 .menuh .menu-b a:hover	{ background:#FFF url(blockskin/share/1_menuh_b_bg_on.gif) repeat;}
 .type-1 .menuh .menu-b .cr,.type-1 .menuh .menu-b .cr:hover	{ background:#C5C5C5 url(blockskin/share/1_menuh_b_bg_cr.gif) repeat;}
 /*(13-B.h.#000)*/
-.type-2 .menuh .menu-b	{ border-left:1px solid #393939;}
+.type-2 .menuh .menu-b li.top	{ border-left:1px solid #393939;}
 .type-2 .menuh .menu-b li,.type-2 .menuh .menu-b .top	{ border-color:#393939;}	.type-2 .menuh .menu-b .top	{ border-left-width:0;}
 .type-2 .menuh .menu-b a	{ color:#CCC;}
 .type-2 .menuh .menu-b a,.type-2 .menuh .menu-b .nolink	{ padding:4px 20px;}
@@ -295,7 +295,7 @@
 /*(1)*/
 .skin-3 h2	{ padding:2px; border-bottom:1px solid #999; color:#444;}
 /*(2)*/
-.skin-3 h3,.skin-3 h3 a	{ padding-left:8px; border-left:5px solid #444; color:#444;}
+.skin-3 h3	{ padding-left:8px; border-left:5px solid #444; color:#444;}
 /*(3)*/
 .skin-3 h4	{ padding-left:18px; background:url(blockskin/skin-3/h4.gif) no-repeat left 4px;}
 /*(4)*/
@@ -362,7 +362,7 @@
 /*(1)*/
 .skin-4 h2	{ padding:2px; border-bottom:1px solid #666; color:#CCC;}
 /*(2)*/
-.skin-4 h3,.skin-4 h3 a	{ padding-left:8px; border-left:5px solid #666; color:#CCC;}
+.skin-4 h3	{ padding-left:8px; border-left:5px solid #666; color:#CCC;}
 /*(3)*/
 .skin-4 h4	{ padding-left:18px; background:url(blockskin/skin-4/h4.gif) no-repeat left 4px; color:#CCC;}
 /*(5)*/
@@ -928,6 +928,32 @@ a.movieButton:hover span	{ background-image:url(blockskin/share/ic_bdmovie_r_ov.
 #bindbox_close	{ height:30px; background-image:url(blockskin/share/bindbox_close.gif);}
 #bindbox_close:hover	{ background-image:url(blockskin/share/bindbox_close_ov.gif);}
 #bindbox_note	{ display:block; width:375px; height:25px; margin:0 auto; background:url(blockskin/share/bindbox_note.gif) no-repeat left 6px;}
+/* :bindboxslim */
+#bindboxslim	{ position:absolute; top:0; left:0; width:100%; z-index:100; text-align:center; line-height:0;}
+#bindboxslim img	{ width:auto; height:auto;}
+#bindboxslim a img	{ border:none;}
+#bindboxslim-close	{ display:block; width:40px; height:40px; margin:8px 0 0 8px; background:url(blockskin/share/bindboxslim_close.png) no-repeat; border:0;}
+#bindboxslim-close:hover	{ background-image:url(blockskin/share/bindboxslim_close_on.png);}
+#bindboxslim-close span	{ display:none;}
+#bindboxslim-image	{ position:relative; width:250px; height:250px; margin:0 auto;}
+#bindboxslim .tl, #bindboxslim .tr, #bindboxslim .tc, #bindboxslim .bl, #bindboxslim .br, #bindboxslim .bc	{ height:40px;}
+#bindboxslim .tl, #bindboxslim .tr, #bindboxslim .bl, #bindboxslim .br	{ width:40px; background-image:url(blockskin/share/bindboxslim_cnr.png);}
+#bindboxslim .tc, #bindboxslim .bc	{ margin:0 40px; background-image:url(blockskin/share/bindboxslim_h.png);}
+#bindboxslim .ml, #bindboxslim .mr	{ width:40px; background-image:url(blockskin/share/bindboxslim_v.png);}
+#bindboxslim .mc	{ height:1%; margin:0 40px; background:#FFF;}
+#bindboxslim-nav	{ position:absolute; top:0; left:0; width:100%; height:100%; z-index:10;}
+#bindboxslim-image > #bindboxslim-nav	{ left:0;}
+#bindboxslim-nav a	{ outline:none; border:0;}
+#bindboxslim-back,#bindboxslim-next	{ display:block; width:49%; height:100%; background-image: url(data:image/gif;base64,AAAA);/* Trick IE into showing hover */ zoom:1;}
+#bindboxslim-back	{ left:0; float:left;}
+#bindboxslim-next	{ right:0; float:right;}
+#bindboxslim-back:hover	{ background:url(blockskin/share/bindboxslim_back.png) no-repeat left 45%;}
+#bindboxslim-next:hover	{ background:url(blockskin/share/bindboxslim_next.png) no-repeat right 45%;}
+#bindboxslim-text p	{ padding:16px 0 0 0; color:#555; font-size:0.8em;}
+#bindboxslim-comment	{ float:left; width:70%; margin-left:15%;}
+#bindboxslim-num	{ float:left; width:15%; text-align:right;}
+#bindboxslim-loading	{ position:absolute; display:none; top:40%; left:0%; width:100%; height:25%; text-align:center; line-height:0; background:url(blockskin/share/bindboxslim_loading.gif) no-repeat center top;}
+#bindboxslim-overlay { position:absolute; top:0; left:0; z-index:90; width:100%; height:500px; background-color:#000;}
 /* :breadcrumb-1 */
 .breadcrumb-1 a	{ border-bottom-width:1px;}
 .breadcrumb-1 a,.breadcrumb-1 span,.breadcrumb-1 em	{ display:inline; float:none;}

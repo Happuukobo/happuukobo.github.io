@@ -17,3 +17,5 @@
 * html .bml,* html .bmr	{ display:none;}
 * html .xml,* html .xmr	{ display:none;}
 * html .ml,* html .mr	{ display:none;}
+
+#area-print .wind-bg	{ padding-top:0;  background:none;}

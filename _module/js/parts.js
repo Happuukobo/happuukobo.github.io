@@ -67,8 +67,9 @@ var Textsize = {
 	},
 	resize: function(size) {
 		if (!bindobj.isLegacy) {
-			var resizeFx = new Fx.Style(document.body, 'font-size', {duration: 250, fps: 60, unit: 'px'});
-			resizeFx.start(size);
+			jQuery(document.body).animate({
+				fontSize: size + 'px'
+			}, 250, 'linear');
 		} else {
 			document.body.style.fontSize = size + 'px';
 		}
@@ -261,3 +262,27 @@ var Bindmenu = {
 		}
 	}
 };
+
+function bd_tracking(link, cat, tid) {
+	var pt = null;
+	if (typeof(pageTracker) == 'undefined') {
+		if (typeof(_gat) == 'undefined') {
+			alert('Google Analyticsが設定されていません。\n' +
+				'「サイト設定」−「アクセス解析設定」に' +
+				'Google Analyticsのトラッキングコードを' +
+				'設定してください。');
+		} else {
+			pt = _gat._getTracker('');
+		}
+	} else {
+		pt = pageTracker;
+	}
+	
+	if (pt != null) {
+		try {
+			pt._trackEvent(cat, tid);
+		} catch(err) {}
+	}
+	
+	setTimeout('document.location = "' + link.href + '"', 100);
+}

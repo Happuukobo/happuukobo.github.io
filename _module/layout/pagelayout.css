@@ -119,12 +119,27 @@
 .btl,.btr,.bbl,.bbr	{ width:6px;}
 .btc,.bbc	{ margin:0 6px;}
 .bml,.bmr	{ width:6px;}
+.mgn-n .bmc	{ margin:0 4px;}
 .mgn .bmc	{ margin:0 6px;}
+.mgn-w .bmc	{ margin:0 8px;}
+.mgn-xw .bmc	{ margin:0 12px;}
+.framed .mgn-n .bmc	{ padding:2px 2px 0 2px;}
 .framed .mgn .bmc	{ padding:4px 4px 0 4px;}
+.framed .mgn-w .bmc	{ padding:6px 6px 0 6px;}
+.framed .mgn-xw .bmc	{ padding:10px 10px 0 10px;}
+.framed .picbk .mgn-n .bmc	{ padding:2px;}
 .framed .picbk .mgn .bmc	{ padding:4px;}
+.framed .picbk .mgn-w .bmc	{ padding:6px;}
+.framed .picbk .mgn-xw .bmc	{ padding:10px;}
 .framed .bmc	{ margin:0 6px;}
+.mgn-n	{ padding:8px 8px 0 8px;}
 .mgn	{ padding:10px 10px 0 10px;}
+.mgn-w	{ padding:12px 12px 0 12px;}
+.mgn-xw	{ padding:16px 16px 0 16px;}
+.framed .mgn-n	{ padding:0;}
 .framed .mgn	{ padding:0;}
+.framed .mgn-w	{ padding:0;}
+.framed .mgn-xw	{ padding:0;}
 .bmm { overflow:hidden;}
 * html .bml,* html .bmr	{ height:9000px;}
 * html .column { width:100%; overflow:hidden;}/*IE6*/
@@ -243,7 +258,7 @@ div.hr	{ height:10px; border-top-width:0; background-repeat:repeat-x;}
 /* indent setting */
 .indent	{ padding-bottom:10px;}	.lined,.tabular,.bubble	{ margin:0 10px;}	.indent table	{ width:100%;}
 .indent table,.indent th,.indent td	{ margin:0; padding:0; border-width:0; background:transparent; vertical-align:top;}
-.indent th	{ padding-right:10px; font-weight:normal;}	.tabular th	{ padding:5px;}
+.indent th	{ padding-right:10px; font-weight:normal; text-align:left;}	.tabular th	{ padding:5px;}
 .indent td	{ width:82%;}
 .lined .dt,.lined .dd	{ display:block;}	.lined span.affix	{ display:block; margin:4px 0 2px 20px;}
 .tabular .balloon	{ margin:5px 10px;}	.tabular p.affix	{ margin:4px 10px 2px 20px;}

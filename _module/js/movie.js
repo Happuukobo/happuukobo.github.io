@@ -1,65 +1,63 @@
 /*
 	BiNDMovie
-	08/11/05
+	101129
 */
-var BiNDMovie = new Class({
+function BiNDMovie() {
+	this.initialize.apply(this, arguments);
+}
+BiNDMovie.prototype = {
 	movies: [],
 	sizes: [],
 	movieObj: null,
+	options: {
+		resizeDuration: 200,
+		resizeTransition: false,	// default transition
+		initialWidth: 200,
+		initialHeight: 30,
+		showCounter: true
+	},
 	initialize: function(anc, options){
-		this.options = $extend({
-			resizeDuration: 200,
-			resizeTransition: false,	// default transition
-			initialWidth: 200,
-			initialHeight: 30,
-			showCounter: true
-		}, options || {});
+		jQuery.extend(this.options, options, {});
 		
 		this.addAnchor(anc);
 		
-		this.eventKeyDown = this.keyboardListener.bindAsEventListener(this);
+		this.bindbox = jQuery('<div id="bindbox"></div>').css({
+			width: this.options.initialWidth,
+			height: this.options.initialHeight,
+			display: 'none'
+		}).appendTo(document.body);
+		if (!bindobj.ie) this.bindbox.css('opacity', 0);
 		
-		this.bindbox = new Element('div', {'id': 'bindbox', 'styles': {
-			'width': this.options.initialWidth, 'height': this.options.initialHeight, 'marginLeft': -(this.options.initialWidth/2),
-			'display': 'none'}}).injectInside(document.body);
-		new Element('div', {'class': 'tl'}).injectInside(this.bindbox);
-		new Element('div', {'class': 'tr'}).injectInside(this.bindbox);
-		new Element('div', {'class': 'tc'}).injectInside(this.bindbox);
+		this.bindbox.append('<div class="tl"></div>').append('<div class="tr"></div>').append('<div class="tc"></div>');
 		
-		var mm = new Element('div', {'class': 'mm'}).injectInside(this.bindbox);
-		new Element('div', {'class': 'ml'}).injectInside(mm);
-		new Element('div', {'class': 'mr'}).injectInside(mm);
+		var mm = jQuery('<div class="mm"></div>').append('<div class="ml"></div>').append('<div class="mr"></div>').appendTo(this.bindbox);
+		var mc = jQuery('<div class="mc"></div>').appendTo(mm);
 		
-		var mc = new Element('div', {'class': 'mc'}).injectInside(mm);
+		this.bindbox.append('<div class="bl"></div>').append('<div class="br"></div>').append('<div class="bc"></div>');
 		
-		new Element('div', {'class': 'bl'}).injectInside(this.bindbox);
-		new Element('div', {'class': 'br'}).injectInside(this.bindbox);
-		new Element('div', {'class': 'bc'}).injectInside(this.bindbox);
+		this.image = jQuery('<div id="bindbox_image"></div>').css({
+			marginLeft: 'auto',
+			marginRight: 'auto'
+		}).appendTo(mc);
 		
-		this.image = new Element('div', {'id': 'bindbox_image'}).injectInside(mc);
+		this.comment = jQuery('<div id="bindbox_comment"></div>').appendTo(mc);
+		this.lineDiv = jQuery('<div id="bindbox_line"></div>').appendTo(mc);
+		this.controlDiv = jQuery('<div id="bindbox_control"></div>').appendTo(mc);
 		
-		this.comment = new Element('div', {'id': 'bindbox_comment'}).injectInside(mc);
-		
-		this.lineDiv = new Element('div', {'id': 'bindbox_line', 'styles': {'display':'none'}}).injectInside(mc);
-		
-		this.controlDiv = new Element('div', {'id': 'bindbox_control', 'styles': {'display':'none'}}).injectInside(mc);
-		var clz = new Element('div', {'id': 'bindbox_close'}).injectInside(this.controlDiv);
-		clz.onclick = this.close.bind(this);
-		
-		var nextEffect = this.nextEffect.bind(this);
-		this.fx = {
-			resize: this.bindbox.effects($extend({duration: this.options.resizeDuration, onComplete: nextEffect},
-					this.options.resizeTransition ? {transition: this.options.resizeTransition} : {})),
-			close: this.bindbox.effects($extend({duration: this.options.resizeDuration, onComplete: this.closeEnd.bind(this)},
-					this.options.resizeTransition ? {transition: this.options.resizeTransition} : {}))
-		};
+		var clazz = this;
+		jQuery('<div id="bindbox_close"></div>').appendTo(this.controlDiv).click(function(){
+			clazz.close();
+		});
 	},
 	
 	addAnchor: function(anc){
-		anc = $(anc);
-		anc.onclick = this.click.pass(anc, this);
+		anc = jQuery(anc);
+		var clazz = this;
+		anc.click(function(){
+			return clazz.click(anc);
+		});
 		this.movies.push(anc);
-		var sz = anc.getProperty("rel");
+		var sz = anc.attr("rel");
 		var pair = sz.split(',');
 		this.sizes.push({width: Number(pair[0]), height: Number(pair[1])});
 	},
@@ -68,16 +66,18 @@ var BiNDMovie = new Class({
 		var anc, sz;
 		for (var i=0; i<this.movies.length; i++) {
 			var a = this.movies[i];
-			if (a.href == link) {
-				var dim = a.getCoordinates();
+			if (a == link) {
+log(a.attr('href'));
+				var pos = a.position();
 				if (this.movieObj==null) {
-					this.top = dim.top - 34;
-					this.left = dim.left - 34;
+					this.top = pos.top - 34;
+					this.left = pos.left - 34;
 				}
-				this.anchorHeight = dim.height;
-				this.anchorWidth = dim.width;
-				this.anchorTop = dim.top - 16;
-				this.anchorLeft = dim.left - 16;
+				this.anchorHeight = a.height();
+				this.anchorWidth = a.width();
+				this.anchorTop = this.top;
+				this.anchorLeft = this.left;
+				
 				anc = a;
 				sz = this.sizes[i];
 				break;
@@ -91,18 +91,17 @@ var BiNDMovie = new Class({
 		this.movieWidth = sz.width;
 		this.movieHeight = sz.height;
 		
-		this.bindbox.setStyles({top: this.top, marginLeft:this.left, display: ''});
+		this.bindbox.css({top: this.top, marginLeft:this.left, display: ''});
 		return this.dispMovie();
 	},
 	
+	toggleObjectVisible: function(open){
+		var tags = 'object' + (bindobj.ie ? ',select' : ',embed');
+		jQuery(tags).css('visibility', open ? 'hidden' : '');
+	},
+	
 	setup: function(open){
-		var elements = $A(document.getElementsByTagName('object'));
-		elements.extend(document.getElementsByTagName(window.ie ? 'select' : 'embed'));
-		elements.each(function(el){
-			if (open && el.style.visibility != 'hidden') el.lbBackupStyle = el.style.visibility;
-			el.style.visibility = open ? 'hidden' : el.lbBackupStyle;
-		});
-		var fn = open ? 'addEvent' : 'removeEvent';
+		this.toggleObjectVisible(open);
 		this.step = 0;
 	},
 	
@@ -114,9 +113,6 @@ var BiNDMovie = new Class({
 	
 	dispMovie: function(){
 		this.step = 1;
-		this.image.className = 'lbLoading';
-		
-		this.nextEffect.bind(this)
 		this.nextEffect();
 		
 		return false;
@@ -125,62 +121,87 @@ var BiNDMovie = new Class({
 	nextEffect: function(){
 		switch (this.step++){
 		case 1:
-			this.image.className = '';
+			this.image[0].innerHTML = '';
+			this.image.css({
+				width: this.movieWidth
+			});
 			
 			if (this.bindbox.clientHeight != this.movieHeight){
-				this.fx.resize.start({height: this.movieHeight + 68, width: this.movieWidth + 68,
-					marginLeft: (window.getWidth() - (this.movieWidth + 68)) / 2,
-					top: window.getScrollTop() + (window.getHeight() / 15)});
+				var clazz = this;
+				var win = jQuery(window);
+				var obj = {
+					height: this.movieHeight + 68,
+					width: this.movieWidth + 68,
+					marginLeft: (win.width() - (this.movieWidth + 68)) / 2,
+					top: win.scrollTop() + (win.height() / 15)
+				};
+				if (!bindobj.ie) obj['opacity'] = 1;
+				this.bindbox.animate(obj, this.options.resizeDuration,
+				function() {
+					clazz.nextEffect();
+				});
 				break;
 			}
 			this.step++;
 			
 		case 2:
 			this.movieObj = this.createObj();
-			this.controlDiv.style.display = '';
-			this.lineDiv.style.display = '';
+			this.controlDiv.show();
+			this.lineDiv.show();
 			this.step = 0;
 		}
 	},
 	
 	closeEffect: function(){
-		this.controlDiv.style.display = 'none';
-		this.lineDiv.style.display = 'none';
-		this.fx.close.start({height: this.anchorHeight, width: this.anchorWidth,
+		this.controlDiv.hide();
+		this.lineDiv.hide();
+		
+		var clazz = this;
+		var obj = {
+			height: this.anchorHeight,
+			width: this.anchorWidth,
 			marginLeft: this.anchorLeft,
-			top: this.anchorTop});
+			top: this.anchorTop
+		};
+		if (!bindobj.ie) obj['opacity'] = 1;
+		this.bindbox.animate(obj, this.options.resizeDuration,
+		function() {
+			clazz.closeEnd();
+		});
+		
 	},
 	
 	closeEnd: function() {
-		this.bindbox.style.display = 'none';
-		this.bindbox.setStyles({'width': this.options.initialWidth, 'height': this.options.initialHeight});
+		this.bindbox.hide();
+		
 	},
 	
 	createObj: function(){
-		var t = this.movie.getProperty("movtype");
+		var t = this.movie[0].getAttribute('movtype');
 		var p = this.getMovieParams(t);
 		var movieId = getNextMovieId();
-		var outer = document.createElement('object');
+		var url = this.movie.attr('href');
 		
+		var outer = document.createElement('object');
 		outer.setAttribute('id', movieId);
 		outer.setAttribute('classid', p.cls);
 		outer.setAttribute('width', this.movieWidth);
 		outer.setAttribute('height', this.movieHeight + 16);
 		if (p.codebase && p.codebase.length > 0) outer.setAttribute('codebase', p.codebase);
-		addParameter(outer, "src", this.movie.href);
+		addParameter(outer, "src", url);
 		
-		if (window.gecko) {
+		if (bindobj.ffx) {
 			var e = document.createElement('embed');
 			e.setAttribute('type', p.tp);
-			e.setAttribute('src', this.movie.href);
+			e.setAttribute('src', url);
 			e.setAttribute('width', this.movieWidth);
 			e.setAttribute('height', this.movieHeight + 16);
 			outer.appendChild(e);
 			
-		} else if (!window.ie) {
+		} else if (!bindobj.ie) {
 			var e = document.createElement('object');
 			e.setAttribute('type', p.tp);
-			e.setAttribute('data', this.movie.href);
+			e.setAttribute('data', url);
 			e.setAttribute('id', movieId + 'Inner');
 			e.setAttribute('width', this.movieWidth);
 			e.setAttribute('height', this.movieHeight + 16);
@@ -205,8 +226,9 @@ var BiNDMovie = new Class({
 			addParameter(outer, 'autostart', 'true');
 		}
 		
-		if (!window.ie) {
-			this.image.appendChild(outer);
+		if (!bindobj.ie) {
+			this.image.append(outer);
+			
 		} else {
 			var markup = "";
 			markup = outer.outerHTML.replace('</OBJECT>', '');
@@ -214,20 +236,21 @@ var BiNDMovie = new Class({
 				markup += outer.childNodes[i].outerHTML;
 			}
 			markup += '</OBJECT>';
-			this.image.innerHTML = markup;
+			this.image[0].innerHTML = markup;
 		}
 		
 		return outer;
 	},
 	
 	close: function(e){
+log('close called!');
 		if (this.step < 0) return;
 		this.step = -1;
-		for (var f in this.fx) this.fx[f].stop();
+		//for (var f in this.fx) this.fx[f].stop();
 		
 		this.removeMovie();
 		
-		this.closeEffect.bind(this);
+		//this.closeEffect.bind(this);
 		this.closeEffect();
 		
 		this.setup(false);
@@ -237,7 +260,7 @@ var BiNDMovie = new Class({
 	
 	removeMovie: function() {
 		if (this.movieObj != null) {
-			if (window.ie) {
+			if (bindobj.ie) {
 				this.movieObj.style.display = 'none';		// for ie6.
 			} else {
 				this.movieObj.style.visibility = 'hidden';
@@ -261,7 +284,7 @@ var BiNDMovie = new Class({
 			
 			this.movieObj = null;
 			
-			this.image.innerHTML = '';
+			this.image[0].innerHTML = '';
 			
 		}
 	},
@@ -309,16 +332,13 @@ var BiNDMovie = new Class({
 		
 		return {'cls':cls, 'codebase':cb, 'tp':tp, 'pluginspage':pg};
 	}
-	
-});
-
-
-
+};
 
 /*
 	bindmovie functions
 */
 var bindMovieNum = 0;
+var movies = [];
 
 function bindmovie() {
 	if (bindobj.printstate) return;	//*** modified by sato
@@ -333,6 +353,10 @@ function bindmovie() {
 	var cp = arguments[7];
 	
 	if (f=='') return;
+	/*
+	if (jQuery.inArray(f, movies) > -1) return;
+	movies.push(f);
+	*/
 	
 	if (t=="mov") {
 		writeQt(t, f, w, h, at, dl, pu, cp);
@@ -347,7 +371,7 @@ function bindmovie() {
 		writeReal(t, f, w, h, at, dl, pu, cp);
 		
 	} else if (t=="flv") {
-		alert("flvにはプレイヤーswfが必要です！");
+		//alert("flvにはプレイヤーswfが必要です！");
 	}
 }
 
@@ -611,7 +635,6 @@ function idflash() {
 	
 	buf += '<param name="bgcolor" value="' + bg + '" />';
 	buf += '<param name="wmode" value="transparent" />';
-//	buf += "<param name=\"FlashVars\" value=\"b='" + ua + "'&idbase='" + idbase + "'\"/>";
 	buf += "<param name=\"FlashVars\" value=\"b=" + ua + "&idbase=" + idbase + "\"/>";
 	
 	buf += '<embed src="' + f + "&tm=" + tm + '" type="application/x-shockwave-flash"'
@@ -622,7 +645,6 @@ function idflash() {
 	buf += ' wmode="transparent"';
 	
 	buf += ' bgcolor="' + bg + '"';
-//	buf += " FlashVars=\"b='" + ua + "'&idbase='" + idbase + "'\"";
 	buf += " FlashVars=\"b=" + ua + "&idbase=" + idbase + "\"";
 	
 	buf += '></embed>';

@@ -55,3 +55,8 @@ div.hr	{ padding:0 0 10px 0; border-top:1px dotted #000;}
 div.hr hr	{ display:none;}
 .hid	{ display:none;}
 .clear	{ clear:both;}
+.over-img	{ display:none;}
+span.left img.over-img,span.right img.over-img	{ display:none;}
+.bd-slide	{ display:none;}
+.ac table { margin-left:auto; margin-right:auto;}
+.ar table { float:right;}

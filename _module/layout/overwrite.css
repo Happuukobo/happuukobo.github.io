@@ -8,3 +8,7 @@
 /* :areaskin */
 #area-footer	{ padding-bottom:0;}
 .area .noskin .wrap	{ padding:0;}
+/* :list 5th */
+.menuv .li4 .li4	{ padding-left:0 !important;}
+/* :table parts */
+div.ac th,div.ac td,div.ar th,div.ar td	{ text-align:left;}

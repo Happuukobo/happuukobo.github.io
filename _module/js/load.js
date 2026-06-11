@@ -1,19 +1,14 @@
 /* load.js
   - Loading order
 --------------------------------------------------------- */
+jQuery.noConflict();
+jQuery.ajaxSetup({scriptCharset:'utf-8'});
+
 // domready
-window.addEvent('domready', function() {
+jQuery(document).ready(function() {
 	////////// parts
 	if (bindobj.printstate) Bindprint.control();
 	else Bindprint.set();
-	
-	//Textsize.start();
-//	Bindmenu.set();
-	
-	////////// footer for IE
-	//if (window.ie) Bindfooter.set();
-	
-//	if (bindobj.ie60) clearpng.fix();
 	
 	////////// blockeditor
 	if (bindobj.isLocal && !bindobj.ie52) BindApp.onload();
@@ -24,15 +19,11 @@ window.addEvent('domready', function() {
 });
 
 // onload
-window.addEvent('load', function() {
+jQuery(function(){
 	////////// for legacy browser
 	legacyCheck();
 	
-	////////// clear png for ie6
-//	if (bindobj.ie60) clearpng.fix();
-	
-	////////// footer for Sarari or Firefox
-	//if (window.attachEvent) Bindfooter.set();
+	////////// set footer
 	Bindfooter.set();
-	
+
 });

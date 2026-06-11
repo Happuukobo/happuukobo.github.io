@@ -1,6 +1,6 @@
 /* blockeditor.js
-(C) 2007-2008 digitalstage inc.
-v 20081106
+(C) 2007-2010 digitalstage inc.
+v 20100903
 --------------------------------------------------------- */
 
 ////////// BiND application interface object
@@ -14,12 +14,14 @@ var BindApp = {
 			BindApp.isWorking = fullUrl.indexOf("?edit") > -1;
 		}
 		if (BindApp.isWorking) {
+			BlockEdit.set();
 			if (window.attachEvent) {
 				window.attachEvent('onresize',BlockEdit.resize);
+				window.attachEvent('onscroll',BlockEdit.scroll);
 			} else if (window.addEventListener) {
 				window.addEventListener('resize',BlockEdit.resize,false);
+				window.addEventListener('scroll',BlockEdit.scroll,false);
 			}
-			BlockEdit.set();
 		}
 		else BlockEdit = null;
 	},
@@ -43,6 +45,7 @@ Value.borderWidth = 2;
 Value.outBackground = '#FFF';
 Value.outBorder = Value.borderWidth + 'px dashed #000';
 Value.outOpacity = new Array('0.4','alpha(opacity=40)');
+Value.overBackground = '#390';
 Value.selectedBackground = '#390';
 Value.selectedBorder = Value.borderWidth + 'px solid #030';
 Value.selectedOpacity = new Array('0.3','alpha(opacity=30)');
@@ -55,7 +58,7 @@ Value.areaTitles = new Array();
 Value.areaOpacity = new Array('0.1','alpha(opacity=10)');
 Value.currentblock = '';
 Value.windowWidth = 0;
-
+Value.topOffset = 0;
 
 ////////// BlockEdit functions
 var BlockEdit = {
@@ -118,7 +121,11 @@ var BlockEdit = {
 		}
 		location.reload();
 	},
-	resize: function() {
+	scroll: function() {
+		BlockEdit.moveToolbar();
+	},
+	resize: function(dummy) {
+		var offset = (dummy==null) ? Value.topOffset:0;
 		if (bindobj.ie60) {
 			var win = document.body.clientWidth;
 			if (win==Value.windowWidth) return;
@@ -133,13 +140,13 @@ var BlockEdit = {
 			c.style.width = obj.w - (Value.borderWidth*2) + 'px';
 			c.style.height = obj.h - (Value.borderWidth*2) + 'px';
 			c.style.left = obj.x + 'px';
-			c.style.top = obj.y + 'px';
+			c.style.top = (obj.y + offset) + 'px';
 			if (bindobj.ie60) {		//forIE6
 				var w = wraps[i];
 				w.style.width = obj.w + 'px';
 				w.style.height = obj.h + 'px';
 				w.style.left = obj.x + 'px';
-				w.style.top = obj.y + 'px';
+				w.style.top = (obj.y + offset) + 'px';
 			}
 		}
 		
@@ -152,31 +159,54 @@ var BlockEdit = {
 			c.style.width = obj.w - (Value.borderWidth*2) + 'px';
 			c.style.height = obj.h - (Value.borderWidth*2) + 'px';
 			c.style.left = obj.x + 'px';
-			c.style.top = obj.y + 'px';
+			c.style.top = (obj.y + offset) + 'px';
 			var t = areaTitles[i];
 			t.style.left = obj.x + 'px';
-			t.style.top = obj.y + 'px';
+			t.style.top = (obj.y + offset) + 'px';
 		}
 		
+		BlockEdit.moveToolbar();
+		
+		if (Bindfooter) Bindfooter.set();
+	},
+	moveToolbar: function() {
 		var form = BlockEdit.form;
 		var btns = BlockEdit.buttons;
 		if (form != null && form.style.display == 'block') {		//if toolbars is shown
-			var cls = form.className;
-			if (cls!='') {
-				var blockobj = getElementPos(BlockEdit.e(cls));
-				form.style.left = blockobj.x + 'px';
-				form.style.top = blockobj.y + 'px';
-				var btnsx = obj.w - BlockEdit.toolbarWidth - 3;
-				btns.style.left = btnsx + 'px';
-				btns.style.top = '3px';
-				if (btnsx<3) {
-					var leftpos = Math.abs(obj.w-BlockEdit.toolbarWidth-3);
-					btns.style.left = obj.x-leftpos<3 ? '3px' : btnsx + 'px';
-				}
+			var blockobj = getElementPos(BlockEdit.e(Value.currentblock));
+			form.style.left = blockobj.x + 'px';
+			var btop = 0;
+			if (bindobj.ie || bindobj.ffx) {
+				btop = document.documentElement.scrollTop + Value.topOffset;
+			} else {
+				btop = document.body.scrollTop + Value.topOffset;
+			}
+			
+			var max = (blockobj.y + blockobj.h - 46);
+			if (max < blockobj.y) max = blockobj.y;
+			var tp = 0;
+			
+			if (blockobj.y < btop && btop < max) {
+				tp = btop;
+			} else if (max < btop) {
+				tp = max;
+			} else {
+				tp = blockobj.y;
+			}
+			
+			form.style.top = tp + 'px';
+			form.style.height = (blockobj.y + blockobj.h - tp) + 'px';
+			form.style.zIndex = 20000;
+			
+			var btns = BlockEdit.buttons;
+			var btnsx = blockobj.w - BlockEdit.toolbarWidth - 3;
+			btns.style.left = btnsx + 'px';
+			btns.style.top = '3px';
+			if (btnsx<3) {
+				var leftpos = Math.abs(blockobj.w-BlockEdit.toolbarWidth-3);
+				btns.style.left = blockobj.x-leftpos<3 ? '3px' : btnsx + 'px';
 			}
 		}
-		
-		if (Bindfooter) Bindfooter.set();
 	},
 	blank: function(block, cover) {
 		if (cover.className=='blankblock') block.style.height = '100px';
@@ -225,13 +255,20 @@ var BlockEdit = {
 		cover.style.width = obj.w - Value.borderWidth * 2 < 0 ? 'auto' : obj.w - Value.borderWidth * 2 + 'px';
 		cover.style.height = obj.h - Value.borderWidth * 2 < 0 ? 'auto' : obj.h - Value.borderWidth * 2 + 'px';
 		cover.style.left = obj.x + 'px';
-		cover.style.top = obj.y + 'px';
+		cover.style.top = (obj.y + Value.topOffset) + 'px';
 		cover.style.cursor = 'pointer';
 		cover.style.border = Value.outBorder;
 		cover.style.background = Value.outBackground;
 		cover.style.opacity = Value.outOpacity[0];	//forSafari
-		cover.style.filter = Value.outOpacity[1]	//forIE
+		cover.style.filter = Value.outOpacity[1];	//forIE
+		cover.style.zIndex = 9999;
 		cover.onclick = BlockEdit.click;
+		cover.onmouseover = function() {
+			cover.style.background = Value.overBackground;
+		};
+		cover.onmouseout = function() {
+			cover.style.background = Value.outBackground;
+		};
 		return cover;
 	},
 	coverArea: function(area) {
@@ -259,7 +296,7 @@ var BlockEdit = {
 		cover.style.position = 'absolute';
 		cover.style.width = obj.w - Value.borderWidth * 2 < 0 ? 'auto' : obj.w - Value.borderWidth * 2 + 'px';
 		cover.style.height = obj.h - Value.borderWidth * 2 < 0 ? 'auto' : obj.h - Value.borderWidth * 2 + 'px';
-		cover.style.top = obj.y + 'px';
+		cover.style.top = (obj.y + Value.topOffset) + 'px';
 		cover.style.left = obj.x + 'px';
 		cover.style.border = '2px solid ' + col;
 		cover.style.backgroundColor = col;
@@ -295,7 +332,7 @@ var BlockEdit = {
 		btns.id = 'Buttons';
 		btns.style.position = 'absolute';
 		btns.style.width = BlockEdit.toolbarWidth + 'px';
-		btns.style.height = '36px';
+		btns.style.height = '40px';
 		form.appendChild(btns);
 		BlockEdit.buttons = btns;
 		
@@ -303,7 +340,7 @@ var BlockEdit = {
 			id.style.cssFloat = 'left';		//forFireFox,Safari
 			id.style.styleFloat = 'left';	//forIE6
 			id.style.overflow = 'hidden';
-			id.style.height = '36px';
+			id.style.height = '40px';
 			id.style.backgroundPosition = 'left top';
 			id.style.cursor = 'pointer';
 			id.onmouseover = function() { id.style.backgroundPosition = 'left -40px';}
@@ -313,12 +350,12 @@ var BlockEdit = {
 		var setseperator = function(id) {
 			id.style.cssFloat = 'left';
 			id.style.styleFloat = 'left';
-			id.style.height = '36px';
+			id.style.height = '40px';
 		};
 		
 		var btnEdit = document.createElement('div');
 		btnEdit.id = 'block_edit';
-		btnEdit.style.width = '68px';
+		btnEdit.style.width = '69px';
 		btnEdit.style.background = 'url(' + Value.rootDir + '_module/js/blockeditor/block_toolbar_edit.png) no-repeat';
 		btnEdit.onclick = function() { BlockEdit.send(btnEdit.id); this.style.backgroundPosition = 'left top'}
 		setstyle(btnEdit);
@@ -326,7 +363,7 @@ var BlockEdit = {
 		
 		var btnUp = document.createElement('div');
 		btnUp.id = 'block_up';
-		btnUp.style.width = '34px';
+		btnUp.style.width = '35px';
 		btnUp.style.background = 'url(' + Value.rootDir + '_module/js/blockeditor/block_toolbar_up.png) no-repeat';
 		btnUp.onclick = function() { BlockEdit.send(btnUp.id);}
 		setstyle(btnUp);
@@ -334,7 +371,7 @@ var BlockEdit = {
 		
 		var btnDown = document.createElement('div');
 		btnDown.id = 'block_down';
-		btnDown.style.width = '36px';
+		btnDown.style.width = '35px';
 		btnDown.style.background = 'url(' + Value.rootDir + '_module/js/blockeditor/block_toolbar_down.png) no-repeat';
 		btnDown.onclick = function() { BlockEdit.send(btnDown.id);}
 		setstyle(btnDown);
@@ -342,7 +379,7 @@ var BlockEdit = {
 		
 		var btnAdd = document.createElement('div');
 		btnAdd.id = 'block_add';
-		btnAdd.style.width = '34px';
+		btnAdd.style.width = '35px';
 		btnAdd.style.background = 'url(' + Value.rootDir + '_module/js/blockeditor/block_toolbar_add.png) no-repeat';
 		btnAdd.onclick = function() { BlockEdit.send(btnAdd.id); this.style.backgroundPosition = 'left top'}
 		setstyle(btnAdd);
@@ -358,7 +395,7 @@ var BlockEdit = {
 		
 		var btnDelete = document.createElement('div');
 		btnDelete.id = 'block_delete';
-		btnDelete.style.width = '34px';
+		btnDelete.style.width = '35px';
 		btnDelete.style.background = 'url(' + Value.rootDir + '_module/js/blockeditor/block_toolbar_del.png) no-repeat';
 		btnDelete.onclick = function() { BlockEdit.send(btnDelete.id);}
 		setstyle(btnDelete);
@@ -404,21 +441,46 @@ var BlockEdit = {
 		var obj = getElementPos(cover);
 		form.style.width = obj.w + 'px';
 		form.style.height = obj.h + 'px';
-		form.style.left = obj.x + 'px';
-		form.style.top = obj.y + 'px';
 		form.style.display = 'block';
+		BlockEdit.moveToolbar();
 		
-		var btns = BlockEdit.buttons;
-		var btnsx = obj.w - BlockEdit.toolbarWidth - 3;
-		btns.style.left = btnsx + 'px';
-		btns.style.top = '3px';
-		if (btnsx<3) {
-			var leftpos = Math.abs(obj.w-BlockEdit.toolbarWidth-3);
-			btns.style.left = obj.x-leftpos<3 ? '3px' : btnsx + 'px';
+		BlockEdit.dispSize( cover );
+	},
+	dispSize: function( cover ) {
+		var curW = parseInt(omitPx(cover.style.width)) + Value.borderWidth * 2;
+		var curH = parseInt(omitPx(cover.style.height)) + Value.borderWidth * 2;
+		if (!BlockEdit.sizeArea) {
+			var sizeArea = document.createElement('div');
+			sizeArea.style.position = 'absolute';
+			sizeArea.style.background = '#000000';
+			sizeArea.style.color = '#ffffff';
+			sizeArea.style.display = 'block';
+			sizeArea.style.padding = '4px';
+			sizeArea.style.fontSize = '10px';
+			sizeArea.style.opacity = '0.6';
+			sizeArea.style.filter = 'alpha(opacity=60)';
+			document.body.appendChild(sizeArea);
+			BlockEdit.sizeArea = sizeArea;
 		}
+		var obj = getElementPos(cover);
+		if (obj.h < 30) {
+			BlockEdit.sizeArea.style.top = (obj.y + 2) + 'px';
+		} else {
+			BlockEdit.sizeArea.style.top = ((obj.y + obj.h) - 30) + 'px';
+		}
+		BlockEdit.sizeArea.style.left = (obj.x + 10) + 'px';
+		BlockEdit.sizeArea.innerHTML = 'w:' + curW + ' x h:' + curH + '';
 	},
 	set: function() {
 		if (Value.preview) return;
+		var metas = BlockEdit.t('meta');
+		for (var i=0; i<metas.length; i++) {
+			var m = metas[i];
+			if (m.name == 'bind-mobile' && m.content == 'true') {
+				Value.topOffset = 90;
+				break;
+			}
+		}
 		var divs = BlockEdit.t('div');
 		if (document.all) Value.windowWidth = document.body.clientWidth;	//forIE onresize bug
 		if (Value.covers.length>0 && bindobj.ie60) for (var i=0;i<Value.blocks.length;i++) {	//forIE6
@@ -456,7 +518,7 @@ var BlockEdit = {
 				}
 			}
 			
-			BlockEdit.resize();
+			BlockEdit.resize(null);
 			
 			BlockEdit.toolbar();
 			BlockEdit.e('page').onclick = BlockEdit.clear;
@@ -479,6 +541,9 @@ var BlockEdit = {
 	}
 };
 
+function omitPx(src) {
+	return src.replace('px', '');
+}
 
 ////////// get the element's position (caluculating from the corner of the screen)
 function getElementPos(element) {

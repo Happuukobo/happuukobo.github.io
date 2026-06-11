@@ -91,6 +91,9 @@ dd	{ font-size:100%; line-height:1.0;}
 
 .bread-crumb1,.bread-crumb2,.bread-crumb3	{ font-size:95%;}
 
+.type-1 .frill img	{ padding:2px; border:1px solid #EBEBEB;}
+.type-2 .frill img	{ padding:2px; border:1px solid #474747;}
+
 
 /* app setting ------------------------------------------ */
 * html a	{ position:relative;}/*forIE6*/

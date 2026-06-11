@@ -88,6 +88,9 @@ strong	{ font-family:"ヒラギノ角ゴ Pro W6";}
 
 .bread-crumb1,.bread-crumb2,.bread-crumb3	{ font-size:90%;}
 
+.type-1 .frill img	{ padding:2px; border:1px solid #EBEBEB;}
+.type-2 .frill img	{ padding:2px; border:1px solid #474747;}
+
 
 /* app setting ------------------------------------------ */
 .area:after,
